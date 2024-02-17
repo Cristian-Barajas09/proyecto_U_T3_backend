@@ -7,11 +7,7 @@ style="background: #333;border-radius: 10px;padding:10px;display: flex;flex-dire
 <ol>
     <li>Para poder crear entornos virtuales puedes instalar virtualenv con el comando <code> pip install virtualenv</code> o ejecutar el comando <code>py -m venv venv</code></li>
     <li>
-        Ejecutar
-        <code>
-        virtualenv venv
-        </code>
-        para crear un entorno virtual
+        Ejecutar<code>virtualenv venv</code>para crear un entorno virtual
     </li>
     <li>
         para activar dicho entorno debes ejecutar en la terminal lo siguiente <code>.\venv\Scripts\activate</code>
