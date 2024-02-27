@@ -1,10 +1,5 @@
 from .base_settings import *
-
+from . import db
 DEBUG = False
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+DATABASES = db.POSTGRES
