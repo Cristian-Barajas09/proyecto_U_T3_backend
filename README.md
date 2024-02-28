@@ -18,3 +18,9 @@ style="background: #333;border-radius: 10px;padding:10px;display: flex;flex-dire
     <li>y por ultimo ejecutar <code>py manage.py runserver</code> para correr el servidor</li>
 </ol>
 </div>
+
+## Documentación
+
+Para añadir nueva documentacion ejecuta el siguiente el comando
+
+<code>py manage.py spectacular --color --file schema.yml</code>
