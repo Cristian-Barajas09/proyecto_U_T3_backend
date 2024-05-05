@@ -1,13 +1,15 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from rest_framework.views import APIView
-from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework import status
 from drf_spectacular.utils import extend_schema,OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from .serializers import EventSerializer
 from .models import Event
+from config.utils import save_image
 # Create your views here.
 
 class EventAPIView(APIView):
@@ -27,9 +29,26 @@ class EventAPIView(APIView):
     )
     def post(self, request: Request):
         data = request.data
+
+        print(data)
         serializer = EventSerializer(data=data)
 
+        if 'image' in data:
+            image: InMemoryUploadedFile = data['image']
+
+            image_response = save_image(
+                image.read(),
+                image.content_type
+            )
+            response = image_response.get('data')
+            if 'error' not in response:
+
+                data['image'] = response.get('url')
+            else:
+                return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
         if serializer.is_valid():
+
             serializer.save()
             return Response({'data': serializer.data}, status=status.HTTP_201_CREATED)
 
@@ -149,4 +168,3 @@ class EventOneTrashAPIView(APIView):
             return Response({'data': EventSerializer(event).data})
         except ObjectDoesNotExist:
             return Response({'error': 'Evento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        
