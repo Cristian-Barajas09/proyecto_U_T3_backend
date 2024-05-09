@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema,OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from .serializers import EventSerializer
@@ -13,6 +14,9 @@ from config.utils import save_image
 # Create your views here.
 
 class EventAPIView(APIView):
+    permission_classes = [
+        IsAuthenticated
+    ]
     @extend_schema(
         tags=['Event'],
         responses={200: OpenApiTypes.OBJECT},
@@ -55,6 +59,9 @@ class EventAPIView(APIView):
         return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class EventOneAPIView(APIView):
+    permission_classes = [
+        IsAuthenticated
+    ]
     @extend_schema(
         tags=['Event'],
         responses={200: OpenApiTypes.OBJECT},
@@ -122,6 +129,9 @@ class EventOneAPIView(APIView):
 
 
 class EventTrashAPIView(APIView):
+    permission_classes = [
+        IsAuthenticated
+    ]
     @extend_schema(
         tags=['Event', 'Trash'],
         responses={200: OpenApiTypes.OBJECT},
@@ -131,6 +141,9 @@ class EventTrashAPIView(APIView):
 
         return Response({'data': EventSerializer(events, many=True).data})
 class EventOneTrashAPIView(APIView):
+    permission_classes = [
+        IsAuthenticated
+    ]
     @extend_schema(
         tags=['Event', 'Trash'],
         responses={200: OpenApiTypes.OBJECT},
