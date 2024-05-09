@@ -1,12 +1,195 @@
 openapi: 3.0.3
 info:
-  title: Your Project API
+  title: Proyecto 3
   version: 1.0.0
-  description: Your project description
+  description: "\n        API creada para cumplir con los requisitos del proyecto\
+    \ sociotecnologico de la uptaiet\n    "
 paths:
-  /api/example/:
+  /api/v1/events/:
     get:
-      operationId: api_example_retrieve
+      operationId: api_v1_events_retrieve
+      tags:
+      - Event
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: api_v1_events_create
+      tags:
+      - Event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Event'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Event'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/events/{event_id}/:
+    get:
+      operationId: api_v1_events_retrieve_2
+      parameters:
+      - in: path
+        name: event_id
+        schema:
+          type: integer
+        description: Event ID
+        required: true
+      tags:
+      - Event
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    put:
+      operationId: api_v1_events_update
+      parameters:
+      - in: path
+        name: event_id
+        schema:
+          type: integer
+        description: Event ID
+        required: true
+      tags:
+      - Event
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    delete:
+      operationId: api_v1_events_destroy
+      parameters:
+      - in: path
+        name: event_id
+        schema:
+          type: integer
+        description: Event ID
+        required: true
+      tags:
+      - Event
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/events/trash/{event_id}/:
+    get:
+      operationId: api_v1_events_trash_retrieve
+      parameters:
+      - in: path
+        name: event_id
+        schema:
+          type: integer
+        description: Event ID
+        required: true
+      tags:
+      - Event
+      - Trash
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    patch:
+      operationId: api_v1_events_trash_partial_update
+      parameters:
+      - in: path
+        name: event_id
+        schema:
+          type: integer
+        description: Event ID
+        required: true
+      tags:
+      - Event
+      - Trash
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/events/trash/all:
+    get:
+      operationId: api_v1_events_trash_all_retrieve
+      tags:
+      - Event
+      - Trash
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/example/:
+    get:
+      operationId: api_v1_example_retrieve
       description: GET request.
       parameters:
       - in: query
@@ -29,6 +212,45 @@ paths:
                 additionalProperties: {}
           description: ''
 components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        image:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        date:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - created_at
+      - date
+      - id
+      - title
+      - updated_at
   securitySchemes:
     basicAuth:
       type: http
