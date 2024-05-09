@@ -7,4 +7,6 @@ app_name = 'api'
 urlpatterns = [
     path('example/', views.ExampleView.as_view(), name='example-view'),
     path('',include('events.urls')),
+    path('',include('inventory.urls'))
+    
 ]
