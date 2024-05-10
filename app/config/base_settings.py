@@ -29,7 +29,6 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,7 +41,7 @@ INSTALLED_APPS = [
     'events',
     'inventory',
     'sales',
-    'auth_api',
+    'rolepermissions',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -81,6 +80,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+ROLEPERMISSIONS_MODULE = 'api.roles'
+
 CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
@@ -111,6 +112,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    'api.backend.AuthenticationBackend',
+    # ...
 ]
 
 
