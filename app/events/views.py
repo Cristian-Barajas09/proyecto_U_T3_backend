@@ -140,6 +140,8 @@ class EventTrashAPIView(APIView):
         events = Event.objects.filter(deleted_at__isnull=False).all()
 
         return Response({'data': EventSerializer(events, many=True).data})
+    
+    
 class EventOneTrashAPIView(APIView):
     permission_classes = [
         IsAuthenticated
