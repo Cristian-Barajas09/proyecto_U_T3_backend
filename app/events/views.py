@@ -11,13 +11,13 @@ from drf_spectacular.types import OpenApiTypes
 from .serializers import EventSerializer
 from .models import Event
 from config.utils import save_image
-from api.permissons import IsClient,AccessAdminPanel
+from api.permissons import HavePermission,AdminPermission
 
 # Create your views here.
 
 class EventAPIView(GenericAPIView):
     permission_classes = [
-        IsAuthenticated,IsClient,AccessAdminPanel
+        IsAuthenticated,HavePermission
     ]
     serializer_class = EventSerializer
 
@@ -65,7 +65,7 @@ class EventAPIView(GenericAPIView):
 
 class EventOneAPIView(GenericAPIView):
     permission_classes = [
-        IsAuthenticated,IsClient,AccessAdminPanel
+        IsAuthenticated,HavePermission
     ]
     serializer_class = EventSerializer
     @extend_schema(
@@ -136,7 +136,7 @@ class EventOneAPIView(GenericAPIView):
 
 class EventTrashAPIView(GenericAPIView):
     permission_classes = [
-        IsAuthenticated,AccessAdminPanel
+        IsAuthenticated,AdminPermission
     ]
     serializer_class = EventSerializer
     @extend_schema(
@@ -149,7 +149,7 @@ class EventTrashAPIView(GenericAPIView):
         return Response({'data': EventSerializer(events, many=True).data})
 class EventOneTrashAPIView(GenericAPIView):
     permission_classes = [
-        IsAuthenticated,AccessAdminPanel
+        IsAuthenticated,AdminPermission
     ]
     serializer_class = EventSerializer
 
