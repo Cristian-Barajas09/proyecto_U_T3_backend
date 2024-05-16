@@ -1,25 +1,31 @@
+"""Views for events"""
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from rest_framework.generics import GenericAPIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema,OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
+from config.utils import save_image
+from api.permissions import AdminPermission
 from .serializers import EventSerializer
 from .models import Event
-from config.utils import save_image
-from api.permissons import HavePermission,AdminPermission
 
 # Create your views here.
 
 class EventAPIView(GenericAPIView):
-    permission_classes = [
-        IsAuthenticated,HavePermission
-    ]
+    """Get all events and create an event"""
     serializer_class = EventSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = []
+        else:
+            self.permission_classes = [IsAuthenticated,AdminPermission]
+        return super().get_permissions()
+
 
 
     @extend_schema(
@@ -27,6 +33,7 @@ class EventAPIView(GenericAPIView):
         responses={200: OpenApiTypes.OBJECT},
     )
     def get(self, request: Request):
+        """Get all events"""
         events = Event.logic.all()
         events_response = EventSerializer(events, many=True)
         return Response({'data': events_response.data})
@@ -37,9 +44,9 @@ class EventAPIView(GenericAPIView):
         responses={201: OpenApiTypes.OBJECT},
     )
     def post(self, request: Request):
+        """Create an event"""
         data = request.data
 
-        print(data)
         serializer = EventSerializer(data=data)
 
         if 'image' in data:
@@ -64,9 +71,20 @@ class EventAPIView(GenericAPIView):
         return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class EventOneAPIView(GenericAPIView):
-    permission_classes = [
-        IsAuthenticated,HavePermission
-    ]
+    """Get, update and delete an event by id"""
+
+    def get_permissions(self):
+
+        if self.request.method == 'GET':
+            self.permission_classes = []
+        else:
+            self.permission_classes = [IsAuthenticated,AdminPermission]
+
+
+        return super().get_permissions()
+
+
+
     serializer_class = EventSerializer
     @extend_schema(
         tags=['Event'],
@@ -81,6 +99,7 @@ class EventOneAPIView(GenericAPIView):
         ]
     )
     def get(self,request,event_id=None):
+        """Get an event by id"""
         try:
             event = Event.logic.get(id=event_id)
             return Response({'data': EventSerializer(event).data})
@@ -100,6 +119,7 @@ class EventOneAPIView(GenericAPIView):
             ]
     )
     def put(self,request,event_id=None):
+        """Update an event"""
         data = request.data
         try:
             event = Event.logic.get(id=event_id)
@@ -135,6 +155,7 @@ class EventOneAPIView(GenericAPIView):
 
 
 class EventTrashAPIView(GenericAPIView):
+    """Get all events in trash"""
     permission_classes = [
         IsAuthenticated,AdminPermission
     ]
@@ -148,6 +169,7 @@ class EventTrashAPIView(GenericAPIView):
 
         return Response({'data': EventSerializer(events, many=True).data})
 class EventOneTrashAPIView(GenericAPIView):
+    """Get and restore an event in trash"""
     permission_classes = [
         IsAuthenticated,AdminPermission
     ]
