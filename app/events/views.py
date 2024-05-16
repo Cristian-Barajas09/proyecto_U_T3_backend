@@ -82,7 +82,7 @@ class EventOneAPIView(GenericAPIView):
     )
     def get(self,request,event_id=None):
         try:
-            event = Event.objects.get(id=event_id)
+            event = Event.logic.get(id=event_id)
             return Response({'data': EventSerializer(event).data})
         except ObjectDoesNotExist:
             return Response({'error': 'Evento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
@@ -102,7 +102,7 @@ class EventOneAPIView(GenericAPIView):
     def put(self,request,event_id=None):
         data = request.data
         try:
-            event = Event.objects.get(id=event_id)
+            event = Event.logic.get(id=event_id)
             serializer = EventSerializer(event, data=data)
 
             if serializer.is_valid():
@@ -127,7 +127,7 @@ class EventOneAPIView(GenericAPIView):
     )
     def delete(self,request,event_id=None):
         try:
-            event = Event.objects.get(id=event_id)
+            event = Event.logic.get(id=event_id)
             event.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except ObjectDoesNotExist:
