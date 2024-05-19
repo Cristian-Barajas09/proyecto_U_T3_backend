@@ -6,10 +6,17 @@ from drf_spectacular.types import OpenApiTypes
 from rest_framework import viewsets ,permissions
 from .models import Profile
 from .serializers import ProfileSerializers
+from .serializers import UserSerializer
+from rest_framework.permissions import IsAuthenticated
+from .roles import ClientRole
+from rolepermissions.roles import assign_role
 # Create your views here.
 
 class ExampleView(APIView):
     """Example View"""
+
+    permission_classes = [IsAuthenticated]
+
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -36,3 +43,17 @@ class ProfileViewset(viewsets.ModelViewSet):
 
 
 
+
+class UserView(APIView):
+    """Create User View"""
+    @extend_schema(
+        responses={200: OpenApiTypes.OBJECT},
+    )
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+
+            assign_role(user, ClientRole)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)

@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -11,12 +11,17 @@ from drf_spectacular.types import OpenApiTypes
 from .serializers import EventSerializer
 from .models import Event
 from config.utils import save_image
+from api.permissons import HavePermission,AdminPermission
+
 # Create your views here.
 
-class EventAPIView(APIView):
+class EventAPIView(GenericAPIView):
     permission_classes = [
-        IsAuthenticated
+        IsAuthenticated,HavePermission
     ]
+    serializer_class = EventSerializer
+
+
     @extend_schema(
         tags=['Event'],
         responses={200: OpenApiTypes.OBJECT},
@@ -58,10 +63,11 @@ class EventAPIView(APIView):
 
         return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-class EventOneAPIView(APIView):
+class EventOneAPIView(GenericAPIView):
     permission_classes = [
-        IsAuthenticated
+        IsAuthenticated,HavePermission
     ]
+    serializer_class = EventSerializer
     @extend_schema(
         tags=['Event'],
         responses={200: OpenApiTypes.OBJECT},
@@ -76,7 +82,7 @@ class EventOneAPIView(APIView):
     )
     def get(self,request,event_id=None):
         try:
-            event = Event.objects.get(id=event_id)
+            event = Event.logic.get(id=event_id)
             return Response({'data': EventSerializer(event).data})
         except ObjectDoesNotExist:
             return Response({'error': 'Evento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
@@ -96,7 +102,7 @@ class EventOneAPIView(APIView):
     def put(self,request,event_id=None):
         data = request.data
         try:
-            event = Event.objects.get(id=event_id)
+            event = Event.logic.get(id=event_id)
             serializer = EventSerializer(event, data=data)
 
             if serializer.is_valid():
@@ -121,17 +127,18 @@ class EventOneAPIView(APIView):
     )
     def delete(self,request,event_id=None):
         try:
-            event = Event.objects.get(id=event_id)
+            event = Event.logic.get(id=event_id)
             event.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except ObjectDoesNotExist:
             return Response({'error': 'Evento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
 
-class EventTrashAPIView(APIView):
+class EventTrashAPIView(GenericAPIView):
     permission_classes = [
-        IsAuthenticated
+        IsAuthenticated,AdminPermission
     ]
+    serializer_class = EventSerializer
     @extend_schema(
         tags=['Event', 'Trash'],
         responses={200: OpenApiTypes.OBJECT},
@@ -140,12 +147,12 @@ class EventTrashAPIView(APIView):
         events = Event.objects.filter(deleted_at__isnull=False).all()
 
         return Response({'data': EventSerializer(events, many=True).data})
-    
-    
-class EventOneTrashAPIView(APIView):
+class EventOneTrashAPIView(GenericAPIView):
     permission_classes = [
-        IsAuthenticated
+        IsAuthenticated,AdminPermission
     ]
+    serializer_class = EventSerializer
+
     @extend_schema(
         tags=['Event', 'Trash'],
         responses={200: OpenApiTypes.OBJECT},

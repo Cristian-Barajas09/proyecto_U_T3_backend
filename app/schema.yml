@@ -106,6 +106,18 @@ paths:
         required: true
       tags:
       - Event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Event'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Event'
+        required: true
       security:
       - jwtAuth: []
       responses:
@@ -172,6 +184,17 @@ paths:
       tags:
       - Event
       - Trash
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
       security:
       - jwtAuth: []
       responses:
@@ -462,6 +485,38 @@ components:
       - id
       - title
       - updated_at
+    PatchedEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        image:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        date:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
     PatchedPlatesSerializers:
       type: object
       properties:
