@@ -126,6 +126,21 @@ class EventOneAPIView(GenericAPIView):
             serializer = EventSerializer(event, data=data)
 
             if serializer.is_valid():
+
+                if 'image' in data:
+                    image: InMemoryUploadedFile = data['image']
+
+                    image_response = save_image(
+                        image.read(),
+                        image.content_type
+                    )
+                    response = image_response.get('data')
+                    if 'error' not in response:
+
+                        data['image'] = response.get('url')
+                    else:
+                        return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
                 serializer.save()
                 return Response({'data': serializer.data})
 
