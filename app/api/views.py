@@ -1,15 +1,15 @@
 """API views."""
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets ,permissions
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema,OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
-from rest_framework import viewsets ,permissions
+from rolepermissions.roles import assign_role
 from .models import Profile
 from .serializers import ProfileSerializers
 from .serializers import UserSerializer
-from rest_framework.permissions import IsAuthenticated
 from .roles import ClientRole
-from rolepermissions.roles import assign_role
 # Create your views here.
 
 class ExampleView(APIView):
@@ -33,7 +33,6 @@ class ExampleView(APIView):
         return Response(
             {'message': 'Hello, World!', 'example': request.query_params.get('example')}
         )
-
 
 
 class ProfileViewset(viewsets.ModelViewSet):
