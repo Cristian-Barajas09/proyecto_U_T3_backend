@@ -32,11 +32,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenVerify'
           description: ''
+  /api/v1/blacklist/:
+    post:
+      operationId: api_v1_blacklist_create
+      description: |-
+        Takes a token and blacklists it. Must be used with the
+        `rest_framework_simplejwt.token_blacklist` app installed.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenBlacklist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenBlacklist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenBlacklist'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenBlacklist'
+          description: ''
   /api/v1/events/:
     get:
-      operationId: api_v1_events_retrieve
+      operationId: api_v1_events_list
+      description: Get all events
+      summary: Get all events
       tags:
-      - Event
+      - events
       security:
       - jwtAuth: []
       responses:
@@ -44,13 +73,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
           description: ''
     post:
       operationId: api_v1_events_create
+      description: Create an event
+      summary: Create an event
       tags:
-      - Event
+      - events
       requestBody:
         content:
           application/json:
@@ -70,21 +102,22 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Event'
           description: ''
-  /api/v1/events/{event_id}/:
+  /api/v1/events/{id}/:
     get:
-      operationId: api_v1_events_retrieve_2
+      operationId: api_v1_events_retrieve
+      description: Get an event
+      summary: Get an event
       parameters:
       - in: path
-        name: event_id
+        name: id
         schema:
           type: integer
-        description: Event ID
+        description: A unique integer value identifying this Event.
         required: true
       tags:
-      - Event
+      - events
       security:
       - jwtAuth: []
       responses:
@@ -92,20 +125,21 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Event'
           description: ''
     put:
       operationId: api_v1_events_update
+      description: Update an event
+      summary: Update an event
       parameters:
       - in: path
-        name: event_id
+        name: id
         schema:
           type: integer
-        description: Event ID
+        description: A unique integer value identifying this Event.
         required: true
       tags:
-      - Event
+      - events
       requestBody:
         content:
           application/json:
@@ -125,65 +159,72 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Event'
+          description: ''
+    patch:
+      operationId: api_v1_events_partial_update
+      description: Viewset for events
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Event.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
           description: ''
     delete:
       operationId: api_v1_events_destroy
+      description: Delete an event
+      summary: Delete an event
       parameters:
       - in: path
-        name: event_id
+        name: id
         schema:
           type: integer
-        description: Event ID
+        description: A unique integer value identifying this Event.
         required: true
       tags:
-      - Event
+      - events
       security:
       - jwtAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-          description: ''
-  /api/v1/events/trash/{event_id}/:
-    get:
-      operationId: api_v1_events_trash_retrieve
-      parameters:
-      - in: path
-        name: event_id
-        schema:
-          type: integer
-        description: Event ID
-        required: true
-      tags:
-      - Event
-      - Trash
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-          description: ''
+        '204':
+          description: No response body
+  /api/v1/events/{id}/restore/:
     patch:
-      operationId: api_v1_events_trash_partial_update
+      operationId: api_v1_events_restore_partial_update
+      description: Restore a trashed event
+      summary: Restore a trashed event
       parameters:
       - in: path
-        name: event_id
+        name: id
         schema:
           type: integer
-        description: Event ID
+        description: A unique integer value identifying this Event.
         required: true
       tags:
-      - Event
-      - Trash
+      - events
       requestBody:
         content:
           application/json:
@@ -202,15 +243,22 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Event'
           description: ''
-  /api/v1/events/trash/all:
+  /api/v1/events/{id}/trash/:
     get:
-      operationId: api_v1_events_trash_all_retrieve
+      operationId: api_v1_events_trash_retrieve
+      description: Get a trashed event
+      summary: Get a trashed event
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Event.
+        required: true
       tags:
-      - Event
-      - Trash
+      - events
       security:
       - jwtAuth: []
       responses:
@@ -218,8 +266,23 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Event'
+          description: ''
+  /api/v1/events/trash/all/:
+    get:
+      operationId: api_v1_events_trash_all_retrieve
+      description: Get all trashed events
+      summary: Get all trashed events
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
           description: ''
   /api/v1/example/:
     get:
@@ -235,7 +298,6 @@ paths:
       - api
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -244,14 +306,578 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/v1/plates/:
+  /api/v1/order/plates/:
     get:
-      operationId: api_v1_plates_list
+      operationId: api_v1_order_plates_list
       tags:
       - api
       security:
       - jwtAuth: []
-      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderPlatesSerializers'
+          description: ''
+    post:
+      operationId: api_v1_order_plates_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderPlatesSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderPlatesSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderPlatesSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderPlatesSerializers'
+          description: ''
+  /api/v1/order/plates/{id}/:
+    get:
+      operationId: api_v1_order_plates_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this order plates.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderPlatesSerializers'
+          description: ''
+    put:
+      operationId: api_v1_order_plates_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this order plates.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderPlatesSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderPlatesSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderPlatesSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderPlatesSerializers'
+          description: ''
+    patch:
+      operationId: api_v1_order_plates_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this order plates.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderPlatesSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderPlatesSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderPlatesSerializers'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderPlatesSerializers'
+          description: ''
+    delete:
+      operationId: api_v1_order_plates_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this order plates.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/orders/:
+    get:
+      operationId: api_v1_orders_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+    post:
+      operationId: api_v1_orders_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+  /api/v1/orders/{id}/:
+    get:
+      operationId: api_v1_orders_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Order.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+    put:
+      operationId: api_v1_orders_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Order.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+    patch:
+      operationId: api_v1_orders_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Order.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderSerializers'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+    delete:
+      operationId: api_v1_orders_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Order.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/payments/:
+    get:
+      operationId: api_v1_payments_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentSerializers'
+          description: ''
+    post:
+      operationId: api_v1_payments_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PaymentSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PaymentSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentSerializers'
+          description: ''
+  /api/v1/payments/{id}/:
+    get:
+      operationId: api_v1_payments_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentSerializers'
+          description: ''
+    put:
+      operationId: api_v1_payments_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PaymentSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PaymentSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentSerializers'
+          description: ''
+    patch:
+      operationId: api_v1_payments_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPaymentSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPaymentSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPaymentSerializers'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentSerializers'
+          description: ''
+    delete:
+      operationId: api_v1_payments_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/paymethods/:
+    get:
+      operationId: api_v1_paymethods_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PayMethodSerializers'
+          description: ''
+    post:
+      operationId: api_v1_paymethods_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayMethodSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PayMethodSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PayMethodSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayMethodSerializers'
+          description: ''
+  /api/v1/paymethods/{id}/:
+    get:
+      operationId: api_v1_paymethods_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayMethodSerializers'
+          description: ''
+    put:
+      operationId: api_v1_paymethods_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayMethodSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PayMethodSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PayMethodSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayMethodSerializers'
+          description: ''
+    patch:
+      operationId: api_v1_paymethods_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPayMethodSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPayMethodSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPayMethodSerializers'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayMethodSerializers'
+          description: ''
+    delete:
+      operationId: api_v1_paymethods_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/plates/:
+    get:
+      operationId: api_v1_plates_list
+      description: Get all plates and create a plate
+      tags:
+      - api
+      security:
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -263,6 +889,7 @@ paths:
           description: ''
     post:
       operationId: api_v1_plates_create
+      description: Get all plates and create a plate
       tags:
       - api
       requestBody:
@@ -279,7 +906,6 @@ paths:
         required: true
       security:
       - jwtAuth: []
-      - {}
       responses:
         '201':
           content:
@@ -290,6 +916,7 @@ paths:
   /api/v1/plates/{id}/:
     get:
       operationId: api_v1_plates_retrieve
+      description: Get all plates and create a plate
       parameters:
       - in: path
         name: id
@@ -301,7 +928,6 @@ paths:
       - api
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -311,6 +937,7 @@ paths:
           description: ''
     put:
       operationId: api_v1_plates_update
+      description: Get all plates and create a plate
       parameters:
       - in: path
         name: id
@@ -334,7 +961,6 @@ paths:
         required: true
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -344,6 +970,7 @@ paths:
           description: ''
     patch:
       operationId: api_v1_plates_partial_update
+      description: Get all plates and create a plate
       parameters:
       - in: path
         name: id
@@ -366,7 +993,6 @@ paths:
               $ref: '#/components/schemas/PatchedPlatesSerializers'
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -376,6 +1002,7 @@ paths:
           description: ''
     delete:
       operationId: api_v1_plates_destroy
+      description: Get all plates and create a plate
       parameters:
       - in: path
         name: id
@@ -387,7 +1014,147 @@ paths:
       - api
       security:
       - jwtAuth: []
-      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/profiles/:
+    get:
+      operationId: api_v1_profiles_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfileSerializers'
+          description: ''
+    post:
+      operationId: api_v1_profiles_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfileSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfileSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileSerializers'
+          description: ''
+  /api/v1/profiles/{id}/:
+    get:
+      operationId: api_v1_profiles_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Profile.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileSerializers'
+          description: ''
+    put:
+      operationId: api_v1_profiles_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Profile.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfileSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfileSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileSerializers'
+          description: ''
+    patch:
+      operationId: api_v1_profiles_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Profile.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileSerializers'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileSerializers'
+          description: ''
+    delete:
+      operationId: api_v1_profiles_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Profile.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
       responses:
         '204':
           description: No response body
@@ -445,10 +1212,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenRefresh'
           description: ''
+  /api/v1/users/:
+    post:
+      operationId: api_v1_users_create
+      description: Create User View
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
 components:
   schemas:
     Event:
       type: object
+      description: Event serializer
       properties:
         id:
           type: integer
@@ -485,8 +1270,56 @@ components:
       - id
       - title
       - updated_at
+    OrderPlatesSerializers:
+      type: object
+      description: This module contains the serializers for the sales app.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order_id:
+          type: integer
+        plates_id:
+          type: integer
+      required:
+      - id
+      - order_id
+      - plates_id
+    OrderSerializers:
+      type: object
+      description: This module contains the serializers for the sales app.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+        address:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        user_id:
+          type: integer
+        plates_id:
+          type: integer
+      required:
+      - address
+      - date
+      - description
+      - id
+      - plates_id
+      - total
+      - user_id
     PatchedEvent:
       type: object
+      description: Event serializer
       properties:
         id:
           type: integer
@@ -517,6 +1350,65 @@ components:
           type: string
           format: date-time
           nullable: true
+    PatchedOrderPlatesSerializers:
+      type: object
+      description: This module contains the serializers for the sales app.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order_id:
+          type: integer
+        plates_id:
+          type: integer
+    PatchedOrderSerializers:
+      type: object
+      description: This module contains the serializers for the sales app.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+        address:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        user_id:
+          type: integer
+        plates_id:
+          type: integer
+    PatchedPayMethodSerializers:
+      type: object
+      description: This module contains the serializers for the sales app.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        currency:
+          type: string
+          maxLength: 5
+        method:
+          type: string
+          maxLength: 60
+    PatchedPaymentSerializers:
+      type: object
+      description: This module contains the serializers for the sales app.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order_id:
+          type: integer
+        method_id:
+          type: integer
     PatchedPlatesSerializers:
       type: object
       properties:
@@ -536,6 +1428,64 @@ components:
           type: string
           format: decimal
           pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+    PatchedProfileSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        phone_number:
+          type: string
+          maxLength: 20
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        dni:
+          type: string
+          maxLength: 12
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user:
+          type: integer
+    PayMethodSerializers:
+      type: object
+      description: This module contains the serializers for the sales app.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        currency:
+          type: string
+          maxLength: 5
+        method:
+          type: string
+          maxLength: 60
+      required:
+      - currency
+      - id
+      - method
+    PaymentSerializers:
+      type: object
+      description: This module contains the serializers for the sales app.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order_id:
+          type: integer
+        method_id:
+          type: integer
+      required:
+      - id
+      - method_id
+      - order_id
     PlatesSerializers:
       type: object
       properties:
@@ -561,6 +1511,48 @@ components:
       - image
       - price
       - title
+    ProfileSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        phone_number:
+          type: string
+          maxLength: 20
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        dni:
+          type: string
+          maxLength: 12
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user:
+          type: integer
+      required:
+      - created_at
+      - dni
+      - email
+      - id
+      - phone_number
+      - updated_at
+      - user
+    TokenBlacklist:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - refresh
     TokenObtainPair:
       type: object
       properties:
