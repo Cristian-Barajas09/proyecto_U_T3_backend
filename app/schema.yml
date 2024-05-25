@@ -59,6 +59,153 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenBlacklist'
           description: ''
+  /api/v1/category/:
+    get:
+      operationId: api_v1_category_list
+      description: Get all plates and create a plate
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlatesSerializers'
+          description: ''
+    post:
+      operationId: api_v1_category_create
+      description: Get all plates and create a plate
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatesSerializers'
+          description: ''
+  /api/v1/category/{id}/:
+    get:
+      operationId: api_v1_category_retrieve
+      description: Get all plates and create a plate
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this plates.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatesSerializers'
+          description: ''
+    put:
+      operationId: api_v1_category_update
+      description: Get all plates and create a plate
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this plates.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatesSerializers'
+          description: ''
+    patch:
+      operationId: api_v1_category_partial_update
+      description: Get all plates and create a plate
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this plates.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPlatesSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPlatesSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPlatesSerializers'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatesSerializers'
+          description: ''
+    delete:
+      operationId: api_v1_category_destroy
+      description: Get all plates and create a plate
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this plates.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/events/:
     get:
       operationId: api_v1_events_list
@@ -306,6 +453,153 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /api/v1/ingredient/:
+    get:
+      operationId: api_v1_ingredient_list
+      description: Get all plates and create a plate
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlatesSerializers'
+          description: ''
+    post:
+      operationId: api_v1_ingredient_create
+      description: Get all plates and create a plate
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatesSerializers'
+          description: ''
+  /api/v1/ingredient/{id}/:
+    get:
+      operationId: api_v1_ingredient_retrieve
+      description: Get all plates and create a plate
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this plates.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatesSerializers'
+          description: ''
+    put:
+      operationId: api_v1_ingredient_update
+      description: Get all plates and create a plate
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this plates.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PlatesSerializers'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatesSerializers'
+          description: ''
+    patch:
+      operationId: api_v1_ingredient_partial_update
+      description: Get all plates and create a plate
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this plates.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPlatesSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPlatesSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPlatesSerializers'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatesSerializers'
+          description: ''
+    delete:
+      operationId: api_v1_ingredient_destroy
+      description: Get all plates and create a plate
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this plates.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/order/plates/:
     get:
       operationId: api_v1_order_plates_list
@@ -1411,6 +1705,7 @@ components:
           type: integer
     PatchedPlatesSerializers:
       type: object
+      description: Serializer for Plates
       properties:
         id:
           type: integer
@@ -1428,6 +1723,14 @@ components:
           type: string
           format: decimal
           pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        categories:
+          type: array
+          items:
+            type: integer
+        ingredients:
+          type: array
+          items:
+            type: integer
     PatchedProfileSerializers:
       type: object
       properties:
@@ -1488,6 +1791,7 @@ components:
       - order_id
     PlatesSerializers:
       type: object
+      description: Serializer for Plates
       properties:
         id:
           type: integer
@@ -1505,10 +1809,20 @@ components:
           type: string
           format: decimal
           pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        categories:
+          type: array
+          items:
+            type: integer
+        ingredients:
+          type: array
+          items:
+            type: integer
       required:
+      - categories
       - description
       - id
       - image
+      - ingredients
       - price
       - title
     ProfileSerializers:
