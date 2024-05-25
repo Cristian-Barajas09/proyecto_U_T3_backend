@@ -73,14 +73,22 @@ class EventViewSet(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
         if 'image' in data:
             image = data['image']
+            try:
+                image_response = save_image(
+                    image.read(),
+                    image.content_type
+                )
+            except AttributeError:
+                return Response(
+                    {
+                        'error': 'Image is required'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-            image_response = save_image(
-                image.read(),
-                image.content_type
-            )
+
             response = image_response.get('data')
             if 'error' not in response:
-
                 data['image'] = response.get('url')
             else:
                 return Response(
@@ -96,13 +104,23 @@ class EventViewSet(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
         data = request.data
 
+
         if 'image' in data:
             image = data['image']
+            try:
+                image_response = save_image(
+                    image.read(),
+                    image.content_type
+                )
+            except AttributeError:
+                return Response(
+                    {
+                        'error': 'Image is required'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-            image_response = save_image(
-                image.read(),
-                image.content_type
-            )
+
             response = image_response.get('data')
             if 'error' not in response:
                 data['image'] = response.get('url')
