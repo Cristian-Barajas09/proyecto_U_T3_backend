@@ -9,7 +9,9 @@ from .serializers import PlatesSerializers,CategorySerializers,IngredientSeriali
 
 class PlatesViewset(viewsets.ModelViewSet):
     """Get all plates and create a plate"""
-    queryset = Plates.objects.all() # pylint: disable=no-member
+    queryset = Plates.objects.filter( # pylint: disable=no-member
+        deleted_at__isnull=True
+    ).all() 
     permission_classes = [permissions.AllowAny]
     serializer_class = PlatesSerializers
 
@@ -72,7 +74,9 @@ class PlatesViewset(viewsets.ModelViewSet):
 
 class CategoryViewset(viewsets.ModelViewSet):
     """Get all categories and create a category"""
-    queryset = Category.objects.all() # pylint: disable=no-member
+    queryset = Category.objects.filter(# pylint: disable=no-member
+        deleted_at__isnull=True
+    ).all()
     permission_classes = [permissions.AllowAny]
     serializer_class = CategorySerializers
 
@@ -85,7 +89,9 @@ class CategoryViewset(viewsets.ModelViewSet):
 
 class IngredientViewset(viewsets.ModelViewSet):
     """Get all ingredients and create an ingredient"""
-    queryset = Ingredient.objects.all() # pylint: disable=no-member
+    queryset = Ingredient.objects.filter( # pylint: disable=no-member
+        deleted_at__isnull=True
+    ).all()
     permission_classes = [permissions.AllowAny]
     serializer_class = IngredientSerializers
 

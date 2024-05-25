@@ -5,13 +5,15 @@ from .models import Plates,Category,Ingredient
 
 class PlatesSerializers(serializers.ModelSerializer):
     """Serializer for Plates"""
-    categories = serializers.StringRelatedField(many=True)
-    ingredients = serializers.StringRelatedField(many=True)
+
     @dataclass
     class Meta:
         """Meta class for PlatesSerializers"""
         model = Plates
         fields = ('id','title','description','image','price','categories','ingredients')
+
+
+
 
 
 class IngredientSerializers(serializers.ModelSerializer):

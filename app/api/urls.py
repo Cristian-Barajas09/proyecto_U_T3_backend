@@ -16,6 +16,7 @@ urlpatterns = [
     path('',include('events.urls')),
     path('',include('inventory.urls')),
     path ('',include('sales.urls')),
+    path('',include('qr.urls')),
     path('', include(router.urls)),
     path('example/', views.ExampleView.as_view(), name='example-view'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
