@@ -3,8 +3,8 @@ from django.db import models
 class Plates(models.Model):
     """Model for Plates"""
     title = models.CharField(max_length=250)
-    description = models.TextField()
-    image = models.URLField()
+    description = models.TextField(null=True, blank=True)
+    image = models.URLField(null=True, blank=True)
     price = models.DecimalField(max_digits=5,max_length=10,decimal_places=2)
     categories = models.ManyToManyField('Category', related_name='plates')
     ingredients = models.ManyToManyField('Ingredient', related_name='plates')
