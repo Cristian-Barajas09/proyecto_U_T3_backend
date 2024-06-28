@@ -6,7 +6,7 @@ from django.http import HttpResponseBadRequest
 from django.contrib.auth.models import User
 from api.roles import AdminRole, ClientRole
 from rolepermissions.roles import assign_role
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient,APITestCase
 from .models import Event
 
 
@@ -124,7 +124,7 @@ class EventDatabaseTest(TestCase):
         self.assertEqual(Event.objects.all().count(), 2)
 
 
-class EventAPITest(TestCase):
+class EventAPITest(APITestCase):
     """Event API Test"""
     ENDPOINT = '/api/v1/events/'
 
@@ -138,7 +138,6 @@ class EventAPITest(TestCase):
 
         assign_role(self.user, AdminRole)
 
-        self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
 
