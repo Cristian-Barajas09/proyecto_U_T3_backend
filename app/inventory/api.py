@@ -4,14 +4,15 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from config.utils import save_image
 from api.permissions import AdminPermission
-from .models import Plates,Category,Ingredient
-from .serializers import PlatesSerializers,CategorySerializers,IngredientSerializers
+from inventory.models import Plates,Category
+from inventory.serializers import PlatesSerializers,CategorySerializers
 
 class PlatesViewset(viewsets.ModelViewSet):
     """Get all plates and create a plate"""
     queryset = Plates.objects.filter( # pylint: disable=no-member
         deleted_at__isnull=True
-    ).all() 
+    ).all()
+
     permission_classes = [permissions.AllowAny]
     serializer_class = PlatesSerializers
 
@@ -79,21 +80,6 @@ class CategoryViewset(viewsets.ModelViewSet):
     ).all()
     permission_classes = [permissions.AllowAny]
     serializer_class = CategorySerializers
-
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            self.permission_classes = []
-        else:
-            self.permission_classes = [IsAuthenticated,AdminPermission]
-        return super().get_permissions()
-
-class IngredientViewset(viewsets.ModelViewSet):
-    """Get all ingredients and create an ingredient"""
-    queryset = Ingredient.objects.filter( # pylint: disable=no-member
-        deleted_at__isnull=True
-    ).all()
-    permission_classes = [permissions.AllowAny]
-    serializer_class = IngredientSerializers
 
     def get_permissions(self):
         if self.request.method == 'GET':

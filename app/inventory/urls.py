@@ -1,11 +1,11 @@
 from rest_framework import routers
-from .api import PlatesViewset, CategoryViewset, IngredientViewset
+from .api import PlatesViewset, CategoryViewset
 
 route = routers.DefaultRouter()
 
-route.register('plates', PlatesViewset , 'plates')
-route.register('categories', CategoryViewset , 'category')
-route.register('ingredients', IngredientViewset , 'ingredient')
+route.register(r'plates', PlatesViewset , 'plates')
+route.register(r'categories', CategoryViewset , 'category')
+
 
 urlpatterns = route.urls
 
