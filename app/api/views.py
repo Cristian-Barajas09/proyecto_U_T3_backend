@@ -3,14 +3,19 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets ,permissions
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema,OpenApiParameter
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+# drf_spectacular package
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
+
+# role package
 from rolepermissions.roles import assign_role
-from .models import Profile
-from .serializers import ProfileSerializers
-from .serializers import UserSerializer
-from .roles import ClientRole
-# Create your views here.
+
+# api package
+from api.roles import ClientRole
+from api.models import Profile
+from api.serializers import ProfileSerializers, UserSerializer, CustomObtainPairSerializer
 
 class ExampleView(APIView):
     """Example View"""
@@ -36,11 +41,10 @@ class ExampleView(APIView):
 
 
 class ProfileViewset(viewsets.ModelViewSet):
-    queryset = Profile.objects.all()
+    """Profile Viewset"""
+    queryset = Profile.objects.all() # pylint: disable=no-member
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileSerializers
-
-
 
 
 class UserView(APIView):
@@ -49,6 +53,7 @@ class UserView(APIView):
         responses={200: OpenApiTypes.OBJECT},
     )
     def post(self, request):
+        """Create a new user."""
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -56,3 +61,7 @@ class UserView(APIView):
             assign_role(user, ClientRole)
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    """Custom token view."""
+    serializer_class = CustomObtainPairSerializer
