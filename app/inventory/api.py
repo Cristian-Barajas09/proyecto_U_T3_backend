@@ -27,25 +27,25 @@ class PlatesViewset(viewsets.ModelViewSet):
 
         data = request.data
 
-
         if 'image' in data:
             image = data['image']
+            try:
+                image_response = save_image(
+                    image.read(),
+                    image.content_type
+                )
 
-            image_response = save_image(
-                image.read(),
-                image.content_type
-            )
-            response = image_response.get('data')
-            if 'error' not in response:
+                response = image_response.get('data')
 
-                data['image'] = response.get('url')
-            else:
+                data['image'] = response.get('name')
+            except ValueError as error:
                 return Response(
                     {
-                        'error': response.get('error')
+                        'error': str(error)
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
+
 
         return super().create(request, *args, **kwargs)
 
@@ -55,18 +55,19 @@ class PlatesViewset(viewsets.ModelViewSet):
 
         if 'image' in data:
             image = data['image']
+            try:
+                image_response = save_image(
+                    image.read(),
+                    image.content_type
+                )
 
-            image_response = save_image(
-                image.read(),
-                image.content_type
-            )
-            response = image_response.get('data')
-            if 'error' not in response:
-                data['image'] = response.get('url')
-            else:
+                response = image_response.get('data')
+
+                data['image'] = response.get('name')
+            except ValueError as error:
                 return Response(
                     {
-                        'error': response.get('error')
+                        'error': str(error)
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )

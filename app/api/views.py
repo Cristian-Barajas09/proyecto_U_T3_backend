@@ -1,4 +1,7 @@
 """API views."""
+from django.contrib.auth.models import User
+
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets ,permissions
@@ -10,12 +13,17 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 
 # role package
-from rolepermissions.roles import assign_role
+from rolepermissions.roles import assign_role, get_user_roles
 
 # api package
 from api.roles import ClientRole
 from api.models import Profile
-from api.serializers import ProfileSerializers, UserSerializer, CustomObtainPairSerializer
+from api.serializers import (
+    ProfileSerializers,
+    UserSerializer,
+    CustomObtainPairSerializer,
+    UserTokenReponseSerializer
+)
 
 class ExampleView(APIView):
     """Example View"""
@@ -65,3 +73,20 @@ class UserView(APIView):
 class CustomTokenObtainPairView(TokenObtainPairView):
     """Custom token view."""
     serializer_class = CustomObtainPairSerializer
+
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code == 200:
+
+            user_save = User.objects.get(email=request.data['username'])
+            print(get_user_roles(user_save))
+            user = UserTokenReponseSerializer({
+                'username': user_save.username,
+                'email': user_save.email,
+                'roles': get_user_roles(user_save)
+            }).data
+
+            response.data['user'] = user
+
+        return response

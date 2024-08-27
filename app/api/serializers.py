@@ -32,6 +32,19 @@ class UserSerializer(ModelSerializer):
             'password': {'write_only': True}
         }
 
+class UserTokenReponseSerializer(serializers.Serializer):
+
+    username = serializers.CharField(max_length=150)
+    email = serializers.EmailField()
+    roles = serializers.ListField(child=serializers.CharField())
+
+
+
+    @dataclass
+    class Meta:
+        """Meta class."""
+
+
 class CustomObtainPairSerializer(TokenObtainPairSerializer):
     """Custom token serializer."""
     
