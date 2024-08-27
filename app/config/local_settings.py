@@ -1,4 +1,4 @@
-from .base_settings import *
+from config.base_settings import *
 from . import db
 DEBUG = True
 
