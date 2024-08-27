@@ -4,7 +4,7 @@ class Plates(models.Model):
     """Model for Plates"""
     title = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True)
-    image = models.URLField(null=True, blank=True)
+    image = models.CharField(null=True, blank=True,max_length=250)
     price = models.DecimalField(max_digits=5,max_length=10,decimal_places=2)
     categories = models.ManyToManyField('Category', related_name='plates')
     created_at = models.DateTimeField(auto_now_add=True)
