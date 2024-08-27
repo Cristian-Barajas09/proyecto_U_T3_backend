@@ -27,6 +27,7 @@ def save_image(image,content_type):
         response.raise_for_status()
         return response.json()
     except requests.HTTPError as error:
+        print(error)
         raise ValueError(
             "Don't save image in image service"
         ) from error
