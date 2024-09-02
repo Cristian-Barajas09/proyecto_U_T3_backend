@@ -14,15 +14,14 @@ from drf_spectacular.types import OpenApiTypes
 
 # role package
 from rolepermissions.roles import assign_role, get_user_roles
-
+# from rolepermissions.roles import RolesClassRegister
 # api package
 from api.roles import ClientRole
 from api.models import Profile
 from api.serializers import (
     ProfileSerializers,
     UserSerializer,
-    CustomObtainPairSerializer,
-    UserTokenReponseSerializer
+    # UserTokenReponseSerializer
 )
 
 class ExampleView(APIView):
@@ -72,21 +71,22 @@ class UserView(APIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     """Custom token view."""
-    serializer_class = CustomObtainPairSerializer
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         response = super().post(request, *args, **kwargs)
 
+
         if response.status_code == 200:
+            user = User.objects.get(email=request.data['username'])
+            roles = get_user_roles(user)
 
-            user_save = User.objects.get(email=request.data['username'])
-            print(get_user_roles(user_save))
-            user = UserTokenReponseSerializer({
-                'username': user_save.username,
-                'email': user_save.email,
-                'roles': get_user_roles(user_save)
-            }).data
+            roles = [role.get_name() for role in roles]
 
-            response.data['user'] = user
+            return Response({'user': {
+                'roles':roles,
+                'email': user.email,
+                'username': user.username,
+                'id': user.id
+            }, **response.data})
 
         return response

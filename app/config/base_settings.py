@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-k238a+u88lxjbo)e#qctdyg06hu2ze73auzw&0-^nniumfn(g2
 
 
 ALLOWED_HOSTS = [
-    '0.0.0.0','localhost'
+    '0.0.0.0','localhost','192.168.1.106', '192.168.1.41'
 ]
 
 
@@ -148,7 +148,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Django Rest Framework
 REST_FRAMEWORK = {
-    # YOUR SETTINGS
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.CustomPagination',
+    'PAGE_SIZE': 10,
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
