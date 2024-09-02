@@ -45,15 +45,4 @@ class UserTokenReponseSerializer(serializers.Serializer):
         """Meta class."""
 
 
-class CustomObtainPairSerializer(TokenObtainPairSerializer):
-    """Custom token serializer."""
-    
-    @classmethod
-    def get_token(cls, user: AuthUser) -> Token:
-        token = super().get_token(user)
 
-        roles = get_user_roles(user)
-
-        token['roles'] = roles
-
-        return token
