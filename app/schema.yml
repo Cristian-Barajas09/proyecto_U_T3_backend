@@ -5,33 +5,6 @@ info:
   description: "\n        API creada para cumplir con los requisitos del proyecto\
     \ sociotecnologico de la uptaiet\n    "
 paths:
-  /api/v1/api/token/verify/:
-    post:
-      operationId: api_v1_api_token_verify_create
-      description: |-
-        Takes a token and indicates if it is valid.  This view provides no
-        information about a token's fitness for a particular use.
-      tags:
-      - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TokenVerify'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TokenVerify'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TokenVerify'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenVerify'
-          description: ''
   /api/v1/blacklist/:
     post:
       operationId: api_v1_blacklist_create
@@ -59,12 +32,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenBlacklist'
           description: ''
-  /api/v1/category/:
+  /api/v1/categories/:
     get:
-      operationId: api_v1_category_list
-      description: Get all plates and create a plate
+      operationId: api_v1_categories_list
+      description: Get all categories
+      summary: Get all categories
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
-      - api
+      - inventory
       security:
       - jwtAuth: []
       responses:
@@ -72,26 +59,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PlatesSerializers'
+                $ref: '#/components/schemas/PaginatedCategorySerializersList'
           description: ''
     post:
-      operationId: api_v1_category_create
-      description: Get all plates and create a plate
+      operationId: api_v1_categories_create
+      description: Create a category
+      summary: Create a category
       tags:
-      - api
+      - inventory
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PlatesSerializers'
+              $ref: '#/components/schemas/CategorySerializers'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PlatesSerializers'
+              $ref: '#/components/schemas/CategorySerializers'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PlatesSerializers'
+              $ref: '#/components/schemas/CategorySerializers'
         required: true
       security:
       - jwtAuth: []
@@ -100,21 +86,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlatesSerializers'
+                $ref: '#/components/schemas/CategorySerializers'
           description: ''
-  /api/v1/category/{id}/:
+  /api/v1/categories/{id}/:
     get:
-      operationId: api_v1_category_retrieve
-      description: Get all plates and create a plate
+      operationId: api_v1_categories_retrieve
+      description: Get a category
+      summary: Get a category
       parameters:
       - in: path
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this plates.
+        description: A unique integer value identifying this category.
         required: true
       tags:
-      - api
+      - inventory
       security:
       - jwtAuth: []
       responses:
@@ -122,31 +109,32 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlatesSerializers'
+                $ref: '#/components/schemas/CategorySerializers'
           description: ''
     put:
-      operationId: api_v1_category_update
-      description: Get all plates and create a plate
+      operationId: api_v1_categories_update
+      description: Update a category
+      summary: Update a category
       parameters:
       - in: path
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this plates.
+        description: A unique integer value identifying this category.
         required: true
       tags:
-      - api
+      - inventory
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PlatesSerializers'
+              $ref: '#/components/schemas/CategorySerializers'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PlatesSerializers'
+              $ref: '#/components/schemas/CategorySerializers'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PlatesSerializers'
+              $ref: '#/components/schemas/CategorySerializers'
         required: true
       security:
       - jwtAuth: []
@@ -155,17 +143,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlatesSerializers'
+                $ref: '#/components/schemas/CategorySerializers'
           description: ''
     patch:
-      operationId: api_v1_category_partial_update
-      description: Get all plates and create a plate
+      operationId: api_v1_categories_partial_update
+      description: Get all categories and create a category
       parameters:
       - in: path
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this plates.
+        description: A unique integer value identifying this category.
         required: true
       tags:
       - api
@@ -173,13 +161,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedPlatesSerializers'
+              $ref: '#/components/schemas/PatchedCategorySerializers'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedPlatesSerializers'
+              $ref: '#/components/schemas/PatchedCategorySerializers'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedPlatesSerializers'
+              $ref: '#/components/schemas/PatchedCategorySerializers'
       security:
       - jwtAuth: []
       responses:
@@ -187,30 +175,67 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlatesSerializers'
+                $ref: '#/components/schemas/CategorySerializers'
           description: ''
     delete:
-      operationId: api_v1_category_destroy
-      description: Get all plates and create a plate
+      operationId: api_v1_categories_destroy
+      description: Delete a category
+      summary: Delete a category
       parameters:
       - in: path
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this plates.
+        description: A unique integer value identifying this category.
         required: true
       tags:
-      - api
+      - inventory
       security:
       - jwtAuth: []
       responses:
         '204':
           description: No response body
+  /api/v1/categories/{id}/plates/:
+    get:
+      operationId: api_v1_categories_plates_retrieve
+      description: Get all plates by category
+      summary: Get all plates by category
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this category.
+        required: true
+      tags:
+      - inventory
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorySerializers'
+          description: ''
   /api/v1/events/:
     get:
       operationId: api_v1_events_list
       description: Get all events
       summary: Get all events
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
       - events
       security:
@@ -220,9 +245,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Event'
+                $ref: '#/components/schemas/PaginatedEventList'
           description: ''
     post:
       operationId: api_v1_events_create
@@ -453,156 +476,22 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/v1/ingredient/:
-    get:
-      operationId: api_v1_ingredient_list
-      description: Get all plates and create a plate
-      tags:
-      - api
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PlatesSerializers'
-          description: ''
-    post:
-      operationId: api_v1_ingredient_create
-      description: Get all plates and create a plate
-      tags:
-      - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PlatesSerializers'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PlatesSerializers'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PlatesSerializers'
-        required: true
-      security:
-      - jwtAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlatesSerializers'
-          description: ''
-  /api/v1/ingredient/{id}/:
-    get:
-      operationId: api_v1_ingredient_retrieve
-      description: Get all plates and create a plate
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this plates.
-        required: true
-      tags:
-      - api
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlatesSerializers'
-          description: ''
-    put:
-      operationId: api_v1_ingredient_update
-      description: Get all plates and create a plate
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this plates.
-        required: true
-      tags:
-      - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PlatesSerializers'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PlatesSerializers'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PlatesSerializers'
-        required: true
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlatesSerializers'
-          description: ''
-    patch:
-      operationId: api_v1_ingredient_partial_update
-      description: Get all plates and create a plate
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this plates.
-        required: true
-      tags:
-      - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPlatesSerializers'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPlatesSerializers'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedPlatesSerializers'
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlatesSerializers'
-          description: ''
-    delete:
-      operationId: api_v1_ingredient_destroy
-      description: Get all plates and create a plate
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this plates.
-        required: true
-      tags:
-      - api
-      security:
-      - jwtAuth: []
-      responses:
-        '204':
-          description: No response body
   /api/v1/order/plates/:
     get:
       operationId: api_v1_order_plates_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
       - api
       security:
@@ -612,9 +501,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/OrderPlatesSerializers'
+                $ref: '#/components/schemas/PaginatedOrderPlatesSerializersList'
           description: ''
     post:
       operationId: api_v1_order_plates_create
@@ -744,6 +631,19 @@ paths:
   /api/v1/orders/:
     get:
       operationId: api_v1_orders_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
       - api
       security:
@@ -753,9 +653,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/OrderSerializers'
+                $ref: '#/components/schemas/PaginatedOrderSerializersList'
           description: ''
     post:
       operationId: api_v1_orders_create
@@ -885,6 +783,19 @@ paths:
   /api/v1/payments/:
     get:
       operationId: api_v1_payments_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
       - api
       security:
@@ -894,9 +805,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PaymentSerializers'
+                $ref: '#/components/schemas/PaginatedPaymentSerializersList'
           description: ''
     post:
       operationId: api_v1_payments_create
@@ -1026,6 +935,19 @@ paths:
   /api/v1/paymethods/:
     get:
       operationId: api_v1_paymethods_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
       - api
       security:
@@ -1035,9 +957,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PayMethodSerializers'
+                $ref: '#/components/schemas/PaginatedPayMethodSerializersList'
           description: ''
     post:
       operationId: api_v1_paymethods_create
@@ -1167,9 +1087,23 @@ paths:
   /api/v1/plates/:
     get:
       operationId: api_v1_plates_list
-      description: Get all plates and create a plate
+      description: Get all plates
+      summary: Get all plates
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
-      - api
+      - inventory
       security:
       - jwtAuth: []
       responses:
@@ -1177,15 +1111,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PlatesSerializers'
+                $ref: '#/components/schemas/PaginatedPlatesSerializersList'
           description: ''
     post:
       operationId: api_v1_plates_create
-      description: Get all plates and create a plate
+      description: Create a plate
+      summary: Create a plate
       tags:
-      - api
+      - inventory
       requestBody:
         content:
           application/json:
@@ -1210,7 +1143,8 @@ paths:
   /api/v1/plates/{id}/:
     get:
       operationId: api_v1_plates_retrieve
-      description: Get all plates and create a plate
+      description: Get a plate
+      summary: Get a plate
       parameters:
       - in: path
         name: id
@@ -1219,7 +1153,7 @@ paths:
         description: A unique integer value identifying this plates.
         required: true
       tags:
-      - api
+      - inventory
       security:
       - jwtAuth: []
       responses:
@@ -1231,7 +1165,8 @@ paths:
           description: ''
     put:
       operationId: api_v1_plates_update
-      description: Get all plates and create a plate
+      description: Update a plate
+      summary: Update a plate
       parameters:
       - in: path
         name: id
@@ -1240,7 +1175,7 @@ paths:
         description: A unique integer value identifying this plates.
         required: true
       tags:
-      - api
+      - inventory
       requestBody:
         content:
           application/json:
@@ -1296,7 +1231,8 @@ paths:
           description: ''
     delete:
       operationId: api_v1_plates_destroy
-      description: Get all plates and create a plate
+      description: Delete a plate
+      summary: Delete a plate
       parameters:
       - in: path
         name: id
@@ -1305,7 +1241,7 @@ paths:
         description: A unique integer value identifying this plates.
         required: true
       tags:
-      - api
+      - inventory
       security:
       - jwtAuth: []
       responses:
@@ -1314,6 +1250,20 @@ paths:
   /api/v1/profiles/:
     get:
       operationId: api_v1_profiles_list
+      description: Profile Viewset
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
       - api
       security:
@@ -1323,12 +1273,11 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProfileSerializers'
+                $ref: '#/components/schemas/PaginatedProfileSerializersList'
           description: ''
     post:
       operationId: api_v1_profiles_create
+      description: Profile Viewset
       tags:
       - api
       requestBody:
@@ -1355,6 +1304,7 @@ paths:
   /api/v1/profiles/{id}/:
     get:
       operationId: api_v1_profiles_retrieve
+      description: Profile Viewset
       parameters:
       - in: path
         name: id
@@ -1375,6 +1325,7 @@ paths:
           description: ''
     put:
       operationId: api_v1_profiles_update
+      description: Profile Viewset
       parameters:
       - in: path
         name: id
@@ -1407,6 +1358,7 @@ paths:
           description: ''
     patch:
       operationId: api_v1_profiles_partial_update
+      description: Profile Viewset
       parameters:
       - in: path
         name: id
@@ -1438,6 +1390,7 @@ paths:
           description: ''
     delete:
       operationId: api_v1_profiles_destroy
+      description: Profile Viewset
       parameters:
       - in: path
         name: id
@@ -1452,12 +1405,31 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/qr/:
+    get:
+      operationId: api_v1_qr_retrieve
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: api_v1_qr_create
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
   /api/v1/token/:
     post:
       operationId: api_v1_token_create
-      description: |-
-        Takes a set of user credentials and returns an access and refresh JSON web
-        token pair to prove the authentication of those credentials.
+      description: Custom token view.
       tags:
       - api
       requestBody:
@@ -1506,10 +1478,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenRefresh'
           description: ''
+  /api/v1/token/verify/:
+    post:
+      operationId: api_v1_token_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
   /api/v1/users/:
     post:
       operationId: api_v1_users_create
-      description: Create User View
+      description: Create a new user.
       tags:
       - api
       security:
@@ -1525,6 +1524,22 @@ paths:
           description: ''
 components:
   schemas:
+    CategorySerializers:
+      type: object
+      description: Serializer for Category
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 250
+        description:
+          type: string
+          nullable: true
+      required:
+      - id
+      - title
     Event:
       type: object
       description: Event serializer
@@ -1611,6 +1626,179 @@ components:
       - plates_id
       - total
       - user_id
+    PaginatedCategorySerializersList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategorySerializers'
+    PaginatedEventList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    PaginatedOrderPlatesSerializersList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderPlatesSerializers'
+    PaginatedOrderSerializersList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderSerializers'
+    PaginatedPayMethodSerializersList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PayMethodSerializers'
+    PaginatedPaymentSerializersList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentSerializers'
+    PaginatedPlatesSerializersList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatesSerializers'
+    PaginatedProfileSerializersList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProfileSerializers'
+    PatchedCategorySerializers:
+      type: object
+      description: Serializer for Category
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 250
+        description:
+          type: string
+          nullable: true
     PatchedEvent:
       type: object
       description: Event serializer
@@ -1715,10 +1903,11 @@ components:
           maxLength: 250
         description:
           type: string
+          nullable: true
         image:
           type: string
-          format: uri
-          maxLength: 200
+          nullable: true
+          maxLength: 250
         price:
           type: string
           format: decimal
@@ -1727,12 +1916,9 @@ components:
           type: array
           items:
             type: integer
-        ingredients:
-          type: array
-          items:
-            type: integer
     PatchedProfileSerializers:
       type: object
+      description: Profile serializer.
       properties:
         id:
           type: integer
@@ -1801,10 +1987,11 @@ components:
           maxLength: 250
         description:
           type: string
+          nullable: true
         image:
           type: string
-          format: uri
-          maxLength: 200
+          nullable: true
+          maxLength: 250
         price:
           type: string
           format: decimal
@@ -1813,20 +2000,14 @@ components:
           type: array
           items:
             type: integer
-        ingredients:
-          type: array
-          items:
-            type: integer
       required:
       - categories
-      - description
       - id
-      - image
-      - ingredients
       - price
       - title
     ProfileSerializers:
       type: object
+      description: Profile serializer.
       properties:
         id:
           type: integer

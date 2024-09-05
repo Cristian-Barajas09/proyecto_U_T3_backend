@@ -1,3 +1,4 @@
+"""Models for Inventory app"""
 from django.db import models
 
 class Plates(models.Model):
@@ -14,8 +15,19 @@ class Plates(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+class CategoryManager(models.Manager):
+    """Manager for Category"""
+    def get_queryset(self) -> models.QuerySet:
+        """Get queryset"""
+        return super().get_queryset().filter(deleted_at__isnull=True)
+
 class Category(models.Model):
     """Model for Category"""
+
+    objects = models.Manager()
+    active_objects = CategoryManager()
+
+
     title = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

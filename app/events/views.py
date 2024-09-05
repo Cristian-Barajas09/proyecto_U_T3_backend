@@ -7,8 +7,8 @@ from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from api.permissions import AdminPermission
 from config.utils import save_image
-from .models import Event
-from .serializers import EventSerializer
+from events.models import Event
+from events.serializers import EventSerializer
 
 @extend_schema_view(
     list=extend_schema(
